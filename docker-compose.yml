@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  nginx:
+      build:
+        context: ./nginx
+      ports:
+        - "80:80"
+      links:
+        - php-fpm
+      volumes_from:
+        - php-fpm
+      volumes:
+        - ./logs/nginx-error.log:/var/log/nginx/error.log
+        - ./logs/nginx-access.log:/var/log/nginx/access.log
+
+  php-fpm:
+      build:
+        context: ./php-fpm
+      ports:
+        - "9000:9000"
+      volumes:
+        - ./public:/var/www
+
+  mysql:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+    ports:
+      - "3306:3306"
